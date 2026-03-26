@@ -9,84 +9,37 @@
     <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
     <style>
         :root {
-            --primary: #2563eb;
-            --primary-hover: #1d4ed8;
-            --secondary: #64748b;
-            --bg: #f8fafc;
-            --card-bg: #ffffff;
-            --text-main: #1e293b;
-            --text-sub: #64748b;
-            --danger: #ef4444;
-            --success: #10b981;
-            --purple: #8b5cf6;
+            --primary: #2563eb; --primary-hover: #1d4ed8; --secondary: #64748b;
+            --bg: #f8fafc; --card-bg: #ffffff; --text-main: #1e293b;
+            --text-sub: #64748b; --danger: #ef4444; --success: #10b981; --purple: #8b5cf6;
         }
-
-        body {
-            font-family: 'Inter', 'Noto Sans TC', sans-serif;
-            background-color: var(--bg);
-            color: var(--text-main);
-            margin: 0;
-            display: flex;
-            justify-content: center;
-            min-height: 100vh;
-            padding: 20px;
-        }
-
-        .container {
-            width: 100%;
-            max-width: 700px;
-            display: flex;
-            flex-direction: column; gap: 20px;
-        }
-
-        .app-card {
-            background: var(--card-bg);
-            border-radius: 24px;
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
-            padding: 32px;
-            border: 1px solid rgba(226, 232, 240, 0.8);
-        }
-
+        body { font-family: 'Inter', 'Noto Sans TC', sans-serif; background-color: var(--bg); color: var(--text-main); margin: 0; display: flex; justify-content: center; min-height: 100vh; padding: 20px; }
+        .container { width: 100%; max-width: 700px; display: flex; flex-direction: column; gap: 20px; }
+        .app-card { background: var(--card-bg); border-radius: 24px; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05); padding: 32px; border: 1px solid rgba(226, 232, 240, 0.8); }
         header { text-align: center; margin-bottom: 24px; }
         header h1 { margin: 0; font-size: 24px; color: var(--primary); font-weight: 700; }
-
         .section-label { font-weight: 600; font-size: 14px; color: var(--text-sub); margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
         
+        /* 歷史紀錄管理樣式 */
         .history-bar { display: flex; gap: 10px; margin-bottom: 15px; }
-        select { flex: 1; padding: 10px 14px; border-radius: 12px; border: 1px solid #e2e8f0; background: #fff; }
+        select { flex: 1; padding: 10px 14px; border-radius: 12px; border: 1px solid #e2e8f0; background: #fff; font-size: 14px; outline: none; }
 
-        textarea {
-            width: 100%; height: 160px; border-radius: 16px; border: 1px solid #e2e8f0;
-            padding: 16px; box-sizing: border-box; font-size: 16px; line-height: 1.6;
-            resize: none; background: #fcfcfd;
-        }
-
+        textarea { width: 100%; height: 160px; border-radius: 16px; border: 1px solid #e2e8f0; padding: 16px; box-sizing: border-box; font-size: 16px; line-height: 1.6; resize: none; background: #fcfcfd; }
         .action-bar { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin: 15px 0; }
-
-        button {
-            display: inline-flex; align-items: center; justify-content: center; gap: 8px;
-            padding: 10px 16px; border-radius: 12px; border: none; font-weight: 600;
-            font-size: 14px; cursor: pointer; transition: all 0.2s;
-        }
+        button { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 10px 16px; border-radius: 12px; border: none; font-weight: 600; font-size: 14px; cursor: pointer; transition: all 0.2s; }
         button:active { transform: scale(0.97); }
         .btn-ghost { background: #f1f5f9; color: var(--text-main); }
         .btn-primary { background: var(--primary); color: white; }
         .btn-shuffle { background: #f5f3ff; color: var(--purple); border: 1px solid #ddd6fe; }
-        .btn-clean { background: #ecfdf5; color: var(--success); border: 1px solid #d1fae5; } /* 新按鍵樣式 */
-
+        .btn-clean { background: #ecfdf5; color: var(--success); border: 1px solid #d1fae5; }
+        
         .settings-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; background: #f8fafc; padding: 16px; border-radius: 16px; margin-bottom: 24px; }
         .setting-item { display: flex; flex-direction: column; gap: 6px; }
-
-        #dictationArea {
-            display: none; position: fixed; inset: 0; background: var(--bg); z-index: 100;
-            padding: 40px 20px; flex-direction: column; align-items: center; justify-content: center;
-        }
+        #status { font-size: 13px; color: var(--primary); text-align: center; height: 20px; margin-bottom: 5px; font-weight: 600; }
+        
+        #dictationArea { display: none; position: fixed; inset: 0; background: var(--bg); z-index: 100; padding: 40px 20px; flex-direction: column; align-items: center; justify-content: center; }
         .playback-card { background: white; width: 100%; max-width: 600px; padding: 40px; border-radius: 32px; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.1); }
         .sentence-display { font-size: 32px; font-weight: 700; min-height: 120px; display: flex; align-items: center; justify-content: center; margin-bottom: 40px; }
-        .sentence-display.hidden { filter: blur(5px); color: #cbd5e1; }
-
-        .btn-next-large { grid-column: span 3; height: 72px; font-size: 20px; background: var(--success); color: white; border-radius: 20px; }
-        #status { font-size: 13px; color: var(--primary); text-align: center; height: 20px; margin-bottom: 5px; font-weight: 600; }
     </style>
 </head>
 <body>
@@ -103,7 +56,9 @@
             <select id="historySelect" onchange="loadFromHistory()">
                 <option value="">-- 載入歷史紀錄 --</option>
             </select>
-            <button class="btn-ghost" onclick="deleteCurrentHistory()"><i data-lucide="trash-2"></i></button>
+            <button class="btn-ghost" onclick="deleteCurrentHistory()" title="刪除選中紀錄">
+                <i data-lucide="trash-2" style="width:18px"></i>
+            </button>
         </div>
 
         <div id="status">系統準備就緒</div>
@@ -129,12 +84,12 @@
 
         <div class="settings-grid">
             <div class="setting-item">
-                <label>朗讀語速 (<span id="speedVal">0.8</span>x)</label>
+                <label style="font-size:12px; font-weight:600; color:var(--text-sub);">朗讀語速 (<span id="speedVal">0.8</span>x)</label>
                 <input type="range" id="speed" min="0.5" max="1.5" step="0.1" value="0.8" oninput="document.getElementById('speedVal').innerText=this.value">
             </div>
             <div class="setting-item">
-                <label>語言設定</label>
-                <select id="langSelect">
+                <label style="font-size:12px; font-weight:600; color:var(--text-sub);">語言設定</label>
+                <select id="langSelect" style="padding:8px; border-radius:8px; border:1px solid #e2e8f0;">
                     <option value="zh-HK">廣東話 (Cantonese)</option>
                     <option value="zh-CN">普通話 (Mandarin)</option>
                     <option value="en-US">英文 (English)</option>
@@ -142,23 +97,23 @@
             </div>
         </div>
 
-        <button class="btn-primary" style="width:100%; height:56px; border-radius:16px;" onclick="startDictation()">
-            開始默書模式
+        <button class="btn-primary" style="width:100%; height:56px; border-radius:16px; font-size:16px;" onclick="startDictation()">
+            <i data-lucide="play-circle"></i> 開始默書模式
         </button>
     </div>
 </div>
 
 <div id="dictationArea">
     <div class="playback-card">
-        <div id="progress" style="font-size:14px; color:#64748b;"></div>
+        <div id="progress" style="font-size:14px; color:#64748b; font-weight:600; margin-bottom:10px;"></div>
         <div class="sentence-display" id="currentSentence"></div>
-        <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:10px;">
+        <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:12px; max-width:400px; margin:0 auto;">
             <button class="btn-ghost" onclick="playPrev()">上一句</button>
-            <button class="btn-ghost" onclick="togglePause()">暫停</button>
+            <button class="btn-ghost" onclick="togglePause()" id="pauseBtn">暫停</button>
             <button class="btn-ghost" onclick="replayCurrent()">重讀</button>
-            <button class="btn-next-large" onclick="playNext()">下一句</button>
+            <button class="btn-primary" style="grid-column: span 3; height:72px; font-size:20px; background:var(--success);" onclick="playNext()">下一句</button>
         </div>
-        <button style="margin-top:20px; color:var(--danger); background:none;" onclick="stopDictation()">結束默書</button>
+        <button style="margin-top:30px; color:var(--danger); background:none;" onclick="stopDictation()">結束默書</button>
     </div>
 </div>
 
@@ -169,12 +124,59 @@
     let shouldCleanOCR = false;
     const synth = window.speechSynthesis;
 
+    // 初始化：載入歷史下拉選單
+    window.onload = () => { refreshHistoryDropdown(); };
+
     function showStatus(msg) {
         document.getElementById('status').innerText = msg;
         setTimeout(() => document.getElementById('status').innerText = "準備就緒", 3000);
     }
 
-    // 觸發文件選擇，並標記是否需要過濾亂碼
+    // --- 歷史紀錄邏輯 ---
+    function refreshHistoryDropdown() {
+        const history = JSON.parse(localStorage.getItem('dictationHistory') || '[]');
+        const select = document.getElementById('historySelect');
+        select.innerHTML = '<option value="">-- 載入歷史紀錄 --</option>';
+        history.forEach((item, index) => {
+            const option = document.createElement('option');
+            option.value = index;
+            option.text = item.substring(0, 30).replace(/\n/g, ' ') + (item.length > 30 ? '...' : '');
+            select.appendChild(option);
+        });
+    }
+
+    function saveToHistory(text) {
+        if (!text.trim()) return;
+        let history = JSON.parse(localStorage.getItem('dictationHistory') || '[]');
+        // 避免重複儲存相同的內容
+        if (!history.includes(text.trim())) {
+            history.unshift(text.trim());
+            if (history.length > 20) history.pop(); // 最多保留 20 條
+            localStorage.setItem('dictationHistory', JSON.stringify(history));
+            refreshHistoryDropdown();
+        }
+    }
+
+    function loadFromHistory() {
+        const index = document.getElementById('historySelect').value;
+        if (index === "") return;
+        const history = JSON.parse(localStorage.getItem('dictationHistory') || '[]');
+        document.getElementById('textInput').value = history[index];
+        showStatus("📁 已載入歷史內容");
+    }
+
+    function deleteCurrentHistory() {
+        const index = document.getElementById('historySelect').value;
+        if (index === "") return;
+        let history = JSON.parse(localStorage.getItem('dictationHistory') || '[]');
+        history.splice(index, 1);
+        localStorage.setItem('dictationHistory', JSON.stringify(history));
+        document.getElementById('textInput').value = "";
+        refreshHistoryDropdown();
+        showStatus("🗑️ 紀錄已刪除");
+    }
+
+    // --- OCR 邏輯 ---
     function triggerOCR(cleanMode) {
         shouldCleanOCR = cleanMode;
         document.getElementById('imageInput').click();
@@ -183,32 +185,25 @@
     document.getElementById('imageInput').addEventListener('change', function(e) {
         const file = e.target.files[0];
         if (!file) return;
-
         showStatus("⏳ 正在識別圖片...");
         Tesseract.recognize(file, 'chi_tra+eng').then(({ data: { text } }) => {
             let processedText = text;
-            
             if (shouldCleanOCR) {
-                // 正則表達式解釋：
-                // \u4e00-\u9fa5 : 中文字
-                // \u3000-\u303f : 中文標點 (如 〕〔)
-                // \uff00-\uffef : 全形標點 (如 ，。！？)
-                // \n : 換行符 (保留格式)
                 processedText = text.replace(/[^\u4e00-\u9fa5\u3000-\u303f\uff00-\uffef\n]/g, '');
                 showStatus("✅ 圖片識別完成 (已過濾亂碼)");
             } else {
                 showStatus("✅ 圖片識別完成");
             }
-
-            document.getElementById('textInput').value += "\n" + processedText;
-            e.target.value = ''; // 重置 input 以便下次能選同一張圖
+            document.getElementById('textInput').value += (document.getElementById('textInput').value ? "\n" : "") + processedText;
+            e.target.value = '';
         });
     });
 
-    // --- 其餘功能邏輯 (與原本一致) ---
+    // --- 默書邏輯 ---
     function startDictation() {
         const rawText = document.getElementById('textInput').value;
         if (!rawText.trim()) return;
+        saveToHistory(rawText); // 開始時自動儲存到歷史
         sentences = rawText.split(/[。！？；.!?;|\n]/).map(s => s.trim()).filter(s => s.length > 0);
         currentIndex = -1;
         document.getElementById('dictationArea').style.display = 'flex';
